@@ -1,7 +1,7 @@
 name: Generate Hash
 
 on:
-  workflow_dispatch:  # You can trigger this manually
+  workflow_dispatch:
 
 jobs:
   generate:
@@ -19,5 +19,4 @@ jobs:
         with:
           workflow: process.yml
           token: ${{ secrets.GITHUB_TOKEN }}
-          inputs: |
-            hash=${{ steps.generate.outputs.HASH }}
+          inputs: '{"hash": "${{ steps.generate.outputs.HASH }}"}'
