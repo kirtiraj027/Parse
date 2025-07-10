@@ -1,0 +1,23 @@
+name: Generate Hash
+
+on:
+  workflow_dispatch:  # You can trigger this manually
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate hash
+        id: generate
+        run: |
+          HASH_VALUE=$(echo "mydata" | sha256sum | cut -d' ' -f1)
+          echo "HASH=$HASH_VALUE" >> $GITHUB_OUTPUT
+
+      - name: Trigger process workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: process.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          inputs: |
+            hash=${{ steps.generate.outputs.HASH }}
