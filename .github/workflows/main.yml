@@ -15,7 +15,7 @@ jobs:
           echo "HASH=$HASH_VALUE" >> $GITHUB_OUTPUT
 
       - name: Trigger process workflow
-        uses: benc-uk/workflow-dispatch@v1
+        uses:
         with:
           workflow: process.yml
           token: ${{ secrets.GITHUB_TOKEN }}
