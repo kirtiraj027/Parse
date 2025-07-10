@@ -1,17 +1,15 @@
-name: Process Hash
+name: Process
 
 on:
   workflow_dispatch:
     inputs:
       hash:
-        description: 'Hash value'
+        description: "Hash to process"
         required: true
-        type: string
 
 jobs:
   process:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Print hash
-        run: echo "Received hash is ${{ inputs.hash }}"
+      - name: Print the hash
+        run: echo "Received hash: ${{ github.event.inputs.hash }}"
