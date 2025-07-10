@@ -1,22 +1,27 @@
-name: Generate Hash
+name: Generate
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   generate:
     runs-on: ubuntu-latest
-
     steps:
       - name: Generate hash
-        id: generate
+        id: hash_step
         run: |
-          HASH_VALUE=$(echo "mydata" | sha256sum | cut -d' ' -f1)
-          echo "HASH=$HASH_VALUE" >> $GITHUB_OUTPUT
+          HASH_VAL=f05db109deadbeef
+          echo "hash=$HASH_VAL" >> $GITHUB_OUTPUT
 
-      - name: Trigger process workflow
-        uses:
-        with:
-          workflow: process.yml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          inputs: '{"hash": "${{ steps.generate.outputs.HASH }}"}'
+      - name: Trigger second workflow using API
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HASH_VALUE: ${{ steps.hash_step.outputs.hash }}
+        run: |
+          curl -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/process.yml/dispatches \
+            -d "{\"ref\":\"main\", \"inputs\": {\"hash\":\"$HASH_VALUE\"}}"
